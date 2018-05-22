@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"github.com/viniciusfeitosa/matrix_mutante/models"
 	"log"
 	"net/http"
 )
@@ -35,7 +36,7 @@ func (a *app) mutant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var postData PostData
+	var postData models.PostData
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&postData); err != nil {
 		http.Error(w, "Invalid resquest payload", http.StatusBadRequest)
@@ -43,20 +44,16 @@ func (a *app) mutant(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	matrix, err := createMatrix(postData.DNA)
+	matrix, err := models.CreateMatrix(postData.DNA)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	var hasMutant int
-	hasMutant += len(matrix.rowsChecker())
-	hasMutant += len(matrix.colsChecker())
-	hasMutant += len(matrix.diagonalLeftToRightChecker())
-	hasMutant += len(matrix.diagonalRightToLeftChecker())
+	stats := models.NewStats(nil).CollectStats(matrix)
 
 	w.Header().Set("Content-Type", "text/plain")
-	if hasMutant > 0 {
+	if stats.CountMutantDna > 0 {
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusForbidden)

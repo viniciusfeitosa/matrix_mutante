@@ -1,4 +1,4 @@
-package main
+package models
 
 import "testing"
 
@@ -65,8 +65,10 @@ func TestColsChecker(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		matrix, _ := createMatrix(testCase.input)
-		result := matrix.colsChecker()
+		matrix, _ := CreateMatrix(testCase.input)
+		c := make(chan []string, 1)
+		go matrix.colsChecker(c)
+		result := <-c
 		if !checkSlices(testCase.expected, result) {
 			t.Errorf("Expected: %v, Received: %v", testCase.expected, result)
 		}
@@ -120,8 +122,10 @@ func TestRowsChecker(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		matrix, _ := createMatrix(testCase.input)
-		result := matrix.rowsChecker()
+		matrix, _ := CreateMatrix(testCase.input)
+		c := make(chan []string, 1)
+		go matrix.rowsChecker(c)
+		result := <-c
 		if !checkSlices(testCase.expected, result) {
 			t.Errorf("Expected: %v, Received: %v", testCase.expected, result)
 		}
@@ -175,8 +179,10 @@ func TestDiagonalLeftToRightChecker(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		matrix, _ := createMatrix(testCase.input)
-		result := matrix.diagonalLeftToRightChecker()
+		matrix, _ := CreateMatrix(testCase.input)
+		c := make(chan []string, 1)
+		go matrix.diagonalLeftToRightChecker(c)
+		result := <-c
 		if !checkSlices(testCase.expected, result) {
 			t.Errorf("Expected: %v, Received: %v", testCase.expected, result)
 		}
@@ -225,8 +231,10 @@ func TestDiagonalRightToLeftChecker(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		matrix, _ := createMatrix(testCase.input)
-		result := matrix.diagonalRightToLeftChecker()
+		matrix, _ := CreateMatrix(testCase.input)
+		c := make(chan []string, 1)
+		go matrix.diagonalRightToLeftChecker(c)
+		result := <-c
 		if !checkSlices(testCase.expected, result) {
 			t.Errorf("Expected: %v, Received: %v", testCase.expected, result)
 		}
@@ -264,7 +272,7 @@ func TestValidateMatrix(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		_, err := createMatrix(testCase.input)
+		_, err := CreateMatrix(testCase.input)
 		if testCase.expected != err {
 			t.Errorf("Expected: %v, Received: %v", testCase.expected, err)
 		}

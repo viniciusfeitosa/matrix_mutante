@@ -1,4 +1,4 @@
-package main
+package models
 
 import (
 	"errors"
@@ -25,11 +25,12 @@ type Matrix struct {
 	biggestDiagonal int
 }
 
-func (matrix Matrix) colsChecker() []string {
+func (matrix Matrix) colsChecker(c chan<- []string) {
 	var mutants []string
 
 	if matrix.rows < identificatorNumber {
-		return nil
+		c <- []string{}
+		return
 	}
 
 	posBlockMoviments := matrix.rows - identificatorNumber
@@ -49,14 +50,15 @@ func (matrix Matrix) colsChecker() []string {
 			}
 		}
 	}
-	return mutants
+	c <- mutants
 }
 
-func (matrix Matrix) rowsChecker() []string {
+func (matrix Matrix) rowsChecker(c chan<- []string) {
 	var mutants []string
 
 	if matrix.cols < identificatorNumber {
-		return nil
+		c <- []string{}
+		return
 	}
 
 	posBlockMoviments := matrix.cols - identificatorNumber
@@ -76,14 +78,14 @@ func (matrix Matrix) rowsChecker() []string {
 			}
 		}
 	}
-	return mutants
+	c <- mutants
 }
 
-func (matrix Matrix) diagonalLeftToRightChecker() []string {
+func (matrix Matrix) diagonalLeftToRightChecker(c chan<- []string) {
 	var mutants []string
 
 	if matrix.biggestDiagonal < identificatorNumber {
-		return nil
+		c <- []string{}
 	}
 
 	// Diagonal per line
@@ -135,14 +137,15 @@ func (matrix Matrix) diagonalLeftToRightChecker() []string {
 		}
 	}
 
-	return mutants
+	c <- mutants
 }
 
-func (matrix Matrix) diagonalRightToLeftChecker() []string {
+func (matrix Matrix) diagonalRightToLeftChecker(c chan<- []string) {
 	var mutants []string
 
 	if matrix.biggestDiagonal < identificatorNumber {
-		return nil
+		c <- []string{}
+		return
 	}
 
 	// Diagonal per line
@@ -194,7 +197,7 @@ func (matrix Matrix) diagonalRightToLeftChecker() []string {
 		}
 	}
 
-	return mutants
+	c <- mutants
 }
 
 func validateMatrix(mat []string) error {
@@ -216,7 +219,8 @@ func validateMatrix(mat []string) error {
 	return nil
 }
 
-func createMatrix(mat []string) (Matrix, error) {
+// CreateMatrix is responsible to create a matrix base on a []string
+func CreateMatrix(mat []string) (Matrix, error) {
 
 	if err := validateMatrix(mat); err != nil {
 		return Matrix{}, err
