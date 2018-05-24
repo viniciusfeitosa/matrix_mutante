@@ -254,6 +254,10 @@ func TestValidateMatrix(t *testing.T) {
 			expected: nil,
 		},
 		{
+			input:    []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCVCTA", "TCACTG"},
+			expected: errinvalidDNAChar,
+		},
+		{
 			input:    []string{"AAAAAA", "AAAAAA", "AAAAAA", "AAAAA", "AAAAAA", "AAAAAA"},
 			expected: errInvalidDNASequence,
 		},

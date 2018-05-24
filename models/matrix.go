@@ -6,16 +6,17 @@ import (
 	"strings"
 )
 
-var errEmptyMatrix = errors.New("Matrix empty")
-var errSmallerMatrix = errors.New("Matrix is smaller than required (4x3 or 3x4)")
-var errInvalidDNASequence = errors.New("Matrix invalid to get a DNA sequence")
+var (
+	errEmptyMatrix        = errors.New("Matrix empty")
+	errSmallerMatrix      = errors.New("Matrix is smaller than required (4x3 or 3x4)")
+	errInvalidDNASequence = errors.New("Matrix invalid to get a DNA sequence")
+	errinvalidDNAChar     = errors.New("Invalid DNA character")
+)
 
 const (
 	identificatorNumber = 4
 	possibleDNA         = "ACGT"
 )
-
-var example = []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"}
 
 // Matrix is a data structure about DNA
 type Matrix struct {
@@ -204,6 +205,16 @@ func validateMatrix(mat []string) error {
 
 	if len(mat) <= 0 {
 		return errEmptyMatrix
+	}
+
+	for _, m := range mat {
+		m = strings.Replace(m, "A", "", -1)
+		m = strings.Replace(m, "C", "", -1)
+		m = strings.Replace(m, "G", "", -1)
+		m = strings.Replace(m, "T", "", -1)
+		if len(m) > 0 {
+			return errinvalidDNAChar
+		}
 	}
 
 	if len(mat) < identificatorNumber && len(mat[0]) < identificatorNumber {

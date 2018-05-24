@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/viniciusfeitosa/matrix_mutante/models"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -15,22 +16,22 @@ func TestMutants(t *testing.T) {
 		httpMethod string
 	}{
 		{
-			input:      PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"}},
+			input:      models.PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"}},
 			expected:   http.StatusOK,
 			httpMethod: "POST",
 		},
 		{
-			input:      PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"}},
+			input:      models.PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"}},
 			expected:   http.StatusMethodNotAllowed,
 			httpMethod: "GET",
 		},
 		{
-			input:      PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTCTGT", "AGAATG", "CCCATA", "TCACTG"}},
+			input:      models.PostData{DNA: []string{"ATGCGA", "CAGTGC", "TTCTGT", "AGAATG", "CCCATA", "TCACTG"}},
 			expected:   http.StatusForbidden,
 			httpMethod: "POST",
 		},
 		{
-			input:      PostData{DNA: []string{"ATG", "CAC", "TTC"}},
+			input:      models.PostData{DNA: []string{"ATG", "CAC", "TTC"}},
 			expected:   http.StatusInternalServerError,
 			httpMethod: "POST",
 		},
