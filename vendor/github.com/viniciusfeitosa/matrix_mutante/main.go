@@ -26,5 +26,5 @@ func main() {
 	a := new(app)
 	a.Initialize(db)
 	a.initializeRoutes()
-	a.Run(":3000")
+	a.Run(":" + os.Getenv("PORT"))
 }
