@@ -101,7 +101,7 @@ func (db *DB) DelValue(key interface{}) error {
 	if db.Enable {
 		conn := db.Pool.Get()
 		defer conn.Close()
-		_, err := redigo.String(conn.Do("DEL", key))
+		_, err := redigo.Int64(conn.Do("DEL", key))
 		return err
 	}
 	return nil

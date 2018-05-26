@@ -23,20 +23,20 @@
 		{
 			"checksumSHA1": "oP1NgR9FPXkgRNUQcpnUO379UH8=",
 			"path": "github.com/viniciusfeitosa/matrix_mutante",
-			"revision": "c2a600a4d77f5fc419a13b0712a2dadd6930c095",
-			"revisionTime": "2018-05-26T03:52:45Z"
+			"revision": "ac78c9bbc26434c07b52c9e2e9b16ca514fa28b0",
+			"revisionTime": "2018-05-26T03:57:44Z"
 		},
 		{
-			"checksumSHA1": "VgfitvTyRIAtcdJF/jZHS9T/ntk=",
+			"checksumSHA1": "c2Az/Z7Mt5JHXjWaaown5ConN1U=",
 			"path": "github.com/viniciusfeitosa/matrix_mutante/db",
-			"revision": "c2a600a4d77f5fc419a13b0712a2dadd6930c095",
-			"revisionTime": "2018-05-26T03:52:45Z"
+			"revision": "ac78c9bbc26434c07b52c9e2e9b16ca514fa28b0",
+			"revisionTime": "2018-05-26T03:57:44Z"
 		},
 		{
 			"checksumSHA1": "fqhI91hO3fDvS7J2d33W5C0T7jQ=",
 			"path": "github.com/viniciusfeitosa/matrix_mutante/models",
-			"revision": "c2a600a4d77f5fc419a13b0712a2dadd6930c095",
-			"revisionTime": "2018-05-26T03:52:45Z"
+			"revision": "ac78c9bbc26434c07b52c9e2e9b16ca514fa28b0",
+			"revisionTime": "2018-05-26T03:57:44Z"
 		}
 	],
 	"rootPath": "github.com/viniciusfeitosa/matrix_mutante"
