@@ -1,0 +1,43 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "5lMzZtb4uUo+N/J+cK7LqwR6bQQ=",
+			"path": "github.com/gomodule/redigo/internal",
+			"revision": "9352ab68be133885e31a43661cc42a220cb8e821",
+			"revisionTime": "2018-04-01T19:18:55Z"
+		},
+		{
+			"checksumSHA1": "4VyihtcnLALw/MfaGgyfIyxvuyk=",
+			"path": "github.com/gomodule/redigo/redis",
+			"revision": "9352ab68be133885e31a43661cc42a220cb8e821",
+			"revisionTime": "2018-04-01T19:18:55Z"
+		},
+		{
+			"checksumSHA1": "Vv2xzrpgM+kLyw/XhdO/1p/i5cU=",
+			"path": "github.com/google/uuid",
+			"revision": "dec09d789f3dba190787f8b4454c7d3c936fed9e",
+			"revisionTime": "2017-11-29T19:10:14Z"
+		},
+		{
+			"checksumSHA1": "rvTizPBm7bCu8BFSBtmD8LM322g=",
+			"path": "github.com/viniciusfeitosa/matrix_mutante",
+			"revision": "8b89b6e03de209f7fe0cdf26c62d7154900c812e",
+			"revisionTime": "2018-05-26T02:14:39Z"
+		},
+		{
+			"checksumSHA1": "hIpK3Fk5ZpMlu1CA2BHD6k0Cp74=",
+			"path": "github.com/viniciusfeitosa/matrix_mutante/db",
+			"revision": "8b89b6e03de209f7fe0cdf26c62d7154900c812e",
+			"revisionTime": "2018-05-26T02:14:39Z"
+		},
+		{
+			"checksumSHA1": "fqhI91hO3fDvS7J2d33W5C0T7jQ=",
+			"path": "github.com/viniciusfeitosa/matrix_mutante/models",
+			"revision": "8b89b6e03de209f7fe0cdf26c62d7154900c812e",
+			"revisionTime": "2018-05-26T02:14:39Z"
+		}
+	],
+	"rootPath": "github.com/viniciusfeitosa/matrix_mutante"
+}

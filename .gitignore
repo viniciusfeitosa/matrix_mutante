@@ -25,6 +25,5 @@
 
 debug*
 cover*
-vendor/*
 
 # End of https://www.gitignore.io/api/go,visualstudiocode
