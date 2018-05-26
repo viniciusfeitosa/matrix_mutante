@@ -10,7 +10,7 @@ There are two endpoints on this application:
 ## Application Usage 
 Where you will receive as parameter an array of Strings that represent each row of a table of (NxN) with the DNA sequence. The letters of the Strings can only be: (A, T, C, G), which represents each nitrogenous DNA base.
 
-![Table Image](https://github.com/viniciusfeitosa/matrix_mutante/images/table.png)
+![Table Image](https://github.com/viniciusfeitosa/matrix_mutante/blob/master/images/table.png)
 
 You will know if a human is mutant, if you find **more than one sequence of four letters
 equal, obliquely, horizontally or vertically**.
@@ -60,7 +60,7 @@ Now, let's understand the GET flow:
 
 The bellow diagram could ilustrate the general application work: 
 
-![Diagram Image](https://github.com/viniciusfeitosa/matrix_mutante/images/mutants.png)
+![Diagram Image](https://github.com/viniciusfeitosa/matrix_mutante/blob/master/images/mutants.png)
 
 With this approach the database is not so stressed and has more freedom to consolidate the information received.
 
