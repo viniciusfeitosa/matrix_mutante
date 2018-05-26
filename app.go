@@ -9,12 +9,12 @@ import (
 )
 
 type app struct {
-	DB     db.DB
+	DB     db.DataBase
 	Router *http.ServeMux
 }
 
 // Initialize create the DB connection and prepare all the routes
-func (a *app) Initialize(db db.DB) {
+func (a *app) Initialize(db db.DataBase) {
 	a.DB = db
 	a.Router = http.NewServeMux()
 }

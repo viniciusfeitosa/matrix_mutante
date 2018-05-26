@@ -2,7 +2,6 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/viniciusfeitosa/matrix_mutante/db"
 	"log"
@@ -16,14 +15,14 @@ const (
 
 // Stats the struct that contains the data status about all the matrix
 type Stats struct {
-	db             db.DB
-	CountMutantDna int    `json:"count_mutant_dna"`
-	CountHumanDna  int    `json:"count_human_dna"`
-	Ratio          string `json:"ratio"`
+	db             db.DataBase
+	CountMutantDna int     `json:"count_mutant_dna"`
+	CountHumanDna  int     `json:"count_human_dna"`
+	Ratio          float32 `json:"ratio"`
 }
 
 // NewStats returns a stats instance
-func NewStats(db db.DB) *Stats {
+func NewStats(db db.DataBase) *Stats {
 	return &Stats{db: db}
 }
 
@@ -63,11 +62,7 @@ func (s *Stats) GetStats() ([]byte, error) {
 	if err != nil {
 		return []byte{}, err
 	}
-	statsBytes, err := json.Marshal(value)
-	if err != nil {
-		return []byte{}, err
-	}
-	return statsBytes, err
+	return []byte(value), err
 }
 
 // JoinStatsWorker is the responsible to sumarise the status
@@ -88,49 +83,61 @@ func (s *Stats) workerProcess(id int) {
 	for {
 		uuid, values, err := s.db.PopQueue(statsQueue, id)
 		if err != nil {
+			s.db.EnqueueValue(statsQueue, uuid)
 			log.Println(err)
 			continue
 		}
-		log.Println("values from queue:", values)
+		if len(values) > 0 {
+			log.Println("values from queue:", values)
 
-		stats := Stats{}
-		if err := json.Unmarshal([]byte(values), &stats); err != nil {
-			s.db.EnqueueValue(statsQueue, uuid)
-			continue
-		}
-		log.Println("stats unmarshaled:", stats)
-
-		value, err := s.db.GetValue(statsKey)
-		if err != nil {
-			s.db.EnqueueValue(statsQueue, uuid)
-			continue
-		}
-
-		if len(value) > 0 {
-			statsToConsolidate := Stats{}
-			if err := json.Unmarshal([]byte(value), &statsToConsolidate); err != nil {
+			stats := Stats{}
+			if err := json.Unmarshal([]byte(values), &stats); err != nil {
 				s.db.EnqueueValue(statsQueue, uuid)
+				log.Println(err)
 				continue
 			}
-			statsToConsolidate.CountHumanDna += stats.CountHumanDna
-			statsToConsolidate.CountMutantDna += stats.CountMutantDna
-			ratio := float64(statsToConsolidate.CountMutantDna*4) / float64((statsToConsolidate.CountMutantDna+statsToConsolidate.CountHumanDna)*4)
-			statsToConsolidate.Ratio = fmt.Sprintf("%.2f", ratio)
-			data, _ := json.Marshal(statsToConsolidate)
-			if err := s.db.SetValue(statsKey, string(data)); err != nil {
+			log.Println("stats unmarshaled:", stats)
+
+			value, err := s.db.GetValue(statsKey)
+			if err != nil {
 				s.db.EnqueueValue(statsQueue, uuid)
+				log.Println(err)
 				continue
 			}
-		} else {
-			ratio := float64(stats.CountMutantDna*4) / float64((stats.CountMutantDna+stats.CountHumanDna)*4)
-			stats.Ratio = fmt.Sprintf("%.2f", ratio)
-			data, _ := json.Marshal(stats)
-			if err := s.db.SetValue(statsKey, string(data)); err != nil {
-				s.db.EnqueueValue(statsQueue, uuid)
-				continue
+
+			if len(value) > 0 {
+				statsToConsolidate := Stats{}
+				if err := json.Unmarshal([]byte(value), &statsToConsolidate); err != nil {
+					s.db.EnqueueValue(statsQueue, uuid)
+					log.Println(err)
+					continue
+				}
+				statsToConsolidate.CountHumanDna += stats.CountHumanDna
+				statsToConsolidate.CountMutantDna += stats.CountMutantDna
+				statsToConsolidate.Ratio = s.truncate(float32(statsToConsolidate.CountMutantDna*4) / float32((statsToConsolidate.CountMutantDna+statsToConsolidate.CountHumanDna)*4))
+				data, _ := json.Marshal(statsToConsolidate)
+				if err := s.db.SetValue(statsKey, string(data)); err != nil {
+					s.db.EnqueueValue(statsQueue, uuid)
+					log.Println(err)
+					continue
+				}
+			} else {
+				stats.Ratio = s.truncate(float32(stats.CountMutantDna*4) / float32((stats.CountMutantDna+stats.CountHumanDna)*4))
+				data, _ := json.Marshal(stats)
+				if err := s.db.SetValue(statsKey, string(data)); err != nil {
+					s.db.EnqueueValue(statsQueue, uuid)
+					log.Println("Set fail", err)
+					continue
+				}
+			}
+
+			if err := s.db.DelValue(uuid); err != nil {
+				log.Println("Del fail", err)
 			}
 		}
-
-		s.db.DelValue(uuid)
 	}
+}
+
+func (s *Stats) truncate(value float32) float32 {
+	return float32(int(value*100)) / 100
 }

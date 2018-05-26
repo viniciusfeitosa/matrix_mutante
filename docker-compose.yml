@@ -17,6 +17,8 @@ services:
       - APP_RD_ADDRESS=mutants_db:6379
       - APP_RD_AUTH=password
       - APP_RD_DBNAME=0
+    ports:
+     - "3000:3000"
     depends_on:
       - mutants_db
     links:

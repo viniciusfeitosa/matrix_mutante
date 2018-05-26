@@ -3,9 +3,12 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"github.com/viniciusfeitosa/matrix_mutante/db"
 	"github.com/viniciusfeitosa/matrix_mutante/models"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -50,7 +53,7 @@ func TestMutants(t *testing.T) {
 
 		rec := httptest.NewRecorder()
 		a := app{}
-		a.Initialize(nil)
+		a.Initialize(&db.MockDB{})
 		a.initializeRoutes()
 		handler := http.HandlerFunc(a.mutant)
 		handler.ServeHTTP(rec, req)
@@ -63,13 +66,28 @@ func TestMutants(t *testing.T) {
 
 func TestStats(t *testing.T) {
 	testCases := []struct {
-		input      interface{}
-		expected   int
-		httpMethod string
+		input        db.DataBase
+		bodyExpected string
+		codeExpected int
+		httpMethod   string
 	}{
 		{
-			expected:   http.StatusMethodNotAllowed,
-			httpMethod: "POST",
+			input:        &db.MockDB{},
+			bodyExpected: `This endpoint works just with method GET`,
+			codeExpected: http.StatusMethodNotAllowed,
+			httpMethod:   "POST",
+		},
+		{
+			input:        &db.MockDB{Value: `{"count_mutant_dna": 27,"count_human_dna": 18,"ratio": 0.6}`},
+			bodyExpected: `{"count_mutant_dna": 27,"count_human_dna": 18,"ratio": 0.6}`,
+			codeExpected: http.StatusOK,
+			httpMethod:   "GET",
+		},
+		{
+			input:        &db.MockDB{Err: []error{errors.New("test get error")}},
+			bodyExpected: `test get error`,
+			codeExpected: http.StatusInternalServerError,
+			httpMethod:   "GET",
 		},
 	}
 	for _, testCase := range testCases {
@@ -80,13 +98,17 @@ func TestStats(t *testing.T) {
 
 		rec := httptest.NewRecorder()
 		a := app{}
-		a.Initialize(nil)
+		a.Initialize(testCase.input)
 		a.initializeRoutes()
 		handler := http.HandlerFunc(a.stats)
 		handler.ServeHTTP(rec, req)
 
-		if status := rec.Code; status != testCase.expected {
-			t.Errorf("Expected: %d Received: %d", testCase.expected, status)
+		if status := rec.Code; status != testCase.codeExpected {
+			t.Errorf("Header Expected: %d Received: %d", testCase.codeExpected, status)
+		}
+
+		if testCase.bodyExpected != strings.TrimSpace(rec.Body.String()) {
+			t.Errorf("Body Expected: %s Received: %s", testCase.bodyExpected, rec.Body.String())
 		}
 	}
 }

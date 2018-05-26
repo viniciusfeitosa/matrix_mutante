@@ -9,7 +9,7 @@ import (
 
 func main() {
 	var numWorkers int
-	db := db.DB{Enable: true}
+	db := &db.DB{Enable: true}
 	flag.StringVar(&db.Address, "redis_address", os.Getenv("APP_RD_ADDRESS"), "Redis Address")
 	flag.StringVar(&db.Auth, "redis_auth", os.Getenv("APP_RD_AUTH"), "Redis Auth")
 	flag.StringVar(&db.DB, "redis_db_name", os.Getenv("APP_RD_DBNAME"), "Redis DB name")

@@ -12,6 +12,16 @@ type Pool interface {
 	Get() redigo.Conn
 }
 
+// DataBase is the DB interface
+type DataBase interface {
+	NewDBPool() *redigo.Pool
+	GetValue(key interface{}) (string, error)
+	SetValue(key interface{}, value interface{}) error
+	DelValue(key interface{}) error
+	EnqueueValue(queue string, uuid uint32) error
+	PopQueue(queue string, id int) (uint32, string, error)
+}
+
 // DB is the struc with db configuration
 type DB struct {
 	Enable          bool
@@ -67,6 +77,9 @@ func (db *DB) GetValue(key interface{}) (string, error) {
 		conn := db.Pool.Get()
 		defer conn.Close()
 		value, err := redigo.String(conn.Do("GET", key))
+		if err == redigo.ErrNil {
+			return "", nil
+		}
 		return value, err
 	}
 	return "", nil
@@ -121,7 +134,7 @@ func (db *DB) PopQueue(queue string, id int) (uint32, string, error) {
 				return 0, "", err
 			}
 
-			values, err = redigo.String(conn.Do("GET", uuid))
+			values, err = db.GetValue(uuid)
 			if err != nil {
 				db.EnqueueValue(queue, uuid)
 				return 0, "", err
