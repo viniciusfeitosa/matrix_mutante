@@ -1,19 +1,21 @@
-FROM golang:latest 
+FROM heroku/heroku:16-build as build
 
-LABEL Name=mutants Version=0.0.1 
+COPY . /app
+WORKDIR /app
 
-RUN  mkdir -p /go/src \
-  && mkdir -p /go/bin \
-  && mkdir -p /go/pkg
-ENV GOPATH=/go
-ENV PATH=$GOPATH/bin:$PATH 
+# Setup buildpack
+RUN mkdir -p /tmp/buildpack/heroku/go /tmp/build_cache /tmp/env
+RUN curl https://codon-buildpacks.s3.amazonaws.com/buildpacks/heroku/go.tgz | tar xz -C /tmp/buildpack/heroku/go
 
-# now copy your app to the proper build path
-RUN mkdir -p $GOPATH/src/app 
-ADD . $GOPATH/src/app
+#Execute Buildpack
+RUN STACK=heroku-16 /tmp/buildpack/heroku/go/bin/compile /app /tmp/build_cache /tmp/env
 
-WORKDIR $GOPATH/src/app
-RUN go build -o main . 
-CMD ["/go/src/app/main"]
+# Prepare final, minimal image
+FROM heroku/heroku:16
 
-EXPOSE 3000
+COPY --from=build /app /app
+ENV HOME /app
+WORKDIR /app
+RUN useradd -m heroku
+USER heroku
+CMD /app/bin/matrix_mutante

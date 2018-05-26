@@ -46,14 +46,14 @@ func (db *DB) NewDBPool() *redigo.Pool {
 				if err != nil {
 					return nil, err
 				}
-				// if _, err = c.Do("AUTH", db.Auth); err != nil {
-				// 	c.Close()
-				// 	return nil, err
-				// }
-				if _, err = c.Do("SELECT", db.DB); err != nil {
+				if _, err = c.Do("AUTH", db.Auth); err != nil {
 					c.Close()
 					return nil, err
 				}
+				// if _, err = c.Do("SELECT", db.DB); err != nil {
+				// 	c.Close()
+				// 	return nil, err
+				// }
 				return c, err
 			},
 			TestOnBorrow: func(c redigo.Conn, t time.Time) error {
