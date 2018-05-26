@@ -1,0 +1,10 @@
+{
+  "name": "Matrix Mutants",
+  "description": "To give mutants for magneto",
+  "keywords": [
+    "go",
+    "redis"
+  ],
+  "website": "http://github.com/viniciusfeitosa/matrix_mutante",
+  "repository": "http://github.com/viniciusfeitosa/matrix_mutante"
+}

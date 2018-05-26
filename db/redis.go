@@ -42,7 +42,7 @@ func (db *DB) NewDBPool() *redigo.Pool {
 			MaxActive:   db.MaxActive,
 			IdleTimeout: time.Second * time.Duration(db.IdleTimeoutSecs),
 			Dial: func() (redigo.Conn, error) {
-				c, err := redigo.Dial("tcp", db.Address)
+				c, err := redigo.DialURL(db.Address)
 				if err != nil {
 					return nil, err
 				}
@@ -50,10 +50,10 @@ func (db *DB) NewDBPool() *redigo.Pool {
 				// 	c.Close()
 				// 	return nil, err
 				// }
-				if _, err = c.Do("SELECT", db.DB); err != nil {
-					c.Close()
-					return nil, err
-				}
+				// if _, err = c.Do("SELECT", db.DB); err != nil {
+				// 	c.Close()
+				// 	return nil, err
+				// }
 				return c, err
 			},
 			TestOnBorrow: func(c redigo.Conn, t time.Time) error {
